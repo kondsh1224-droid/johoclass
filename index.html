@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>一人暮らしシミュレーション・収入と支出ワークシート</title>
+  <style>
+    :root {
+      --border: #444;
+      --bg: #f7f7f7;
+    }
+    body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; margin: 24px; }
+    h1, h2 { margin: 0 0 12px; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      background: white;
+    }
+    .card h2 { font-size: 18px; margin-bottom: 8px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid var(--border); padding: 8px; text-align: left; }
+    th { background: var(--bg); }
+    input[type="text"], input[type="number"], textarea {
+      width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: 4px;
+      box-sizing: border-box; font-size: 14px;
+    }
+    .flex-row { display: flex; gap: 8px; align-items: center; }
+    .calc { margin-top: 8px; }
+    .actions { margin-top: 16px; display: flex; gap: 8px; }
+    .btn {
+      padding: 8px 12px; border: 1px solid var(--border); background: var(--bg); cursor: pointer;
+      border-radius: 6px;
+    }
+    /* 印刷用スタイル */
+    @media print {
+      .btn, .actions { display: none !important; }
+      input, textarea {
+        border: none; border-bottom: 1px solid #888; padding: 2px; background: transparent;
+      }
+      body { margin: 0.8cm; }
+    }
+  </style>
+</head>
+<body>
+  <h1>一人暮らしシミュレーション・収入と支出ワークシート</h1>
+
+  <div class="grid">
+    <!-- 収入（左側） -->
+    <div class="card">
+      <h2>収入（左側）</h2>
+      <table>
+        <tr><th>項目</th><th>金額（円）</th></tr>
+        <tr><td>アルバイト収入</td><td><input type="number" min="0" id="inc1" /></td></tr>
+        <tr><td>奨学金</td><td><input type="number" min="0" id="inc2" /></td></tr>
+        <tr><td>親からの仕送り</td><td><input type="number" min="0" id="inc3" /></td></tr>
+        <tr><td>その他</td><td><input type="number" min="0" id="inc4" /></td></tr>
+        <tr><th>合計収入</th><th><input type="number" id="incTotal" readonly /></th></tr>
+      </table>
+    </div>
+
+    <!-- 支出（右側） -->
+    <div class="card">
+      <h2>支出（右側）</h2>
+      <table>
+        <tr><th>項目</th><th>金額（円）</th></tr>
+        <tr><td>家賃</td><td><input type="number" min="0" id="exp1" /></td></tr>
+        <tr><td>光熱費（電気・ガス・水道）</td><td><input type="number" min="0" id="exp2" /></td></tr>
+        <tr><td>通信費（スマホ・Wi‑Fi）</td><td><input type="number" min="0" id="exp3" /></td></tr>
+        <tr><td>食費</td><td><input type="number" min="0" id="exp4" /></td></tr>
+        <tr><td>交通費</td><td><input type="number" min="0" id="exp5" /></td></tr>
+        <tr><td>趣味・交際費</td><td><input type="number" min="0" id="exp6" /></td></tr>
+        <tr><td>その他</td><td><input type="number" min="0" id="exp7" /></td></tr>
+        <tr><th>合計支出</th><th><input type="number" id="expTotal" readonly /></th></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>残金計算欄</h2>
+    <div class="flex-row">
+      <label for="balance">合計収入 − 合計支出 ＝</label>
+      <input type="number" id="balance" readonly />
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="calc()">自動計算</button>
+      <button class="btn" onclick="clearAll()">全てクリア</button>
+      <button class="btn" onclick="window.print()">印刷</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>1日の生活スケジュール（例：平日）</h2>
+      <table>
+        <tr><th>時間帯</th><th>活動内容</th><th>家事・生活の工夫</th></tr>
+        <tr><td>6:00-8:00</td><td><input type="text" /></td><td><input type="text" /></td></tr>
+        <tr><td>8:00-16:00</td><td><input type="text" /></td><td><input type="text" /></td></tr>
+        <tr><td>16:00-20:00</td><td><input type="text" /></td><td><input type="text" /></td></tr>
+        <tr><td>20:00-23:00</td><td><input type="text" /></td><td><input type="text" /></td></tr>
+        <tr><td>23:00-6:00</td><td><input type="text" /></td><td><input type="text" /></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>トラブル対応チェックリスト</h2>
+      <div>
+        <label><input type="checkbox" /> 冷蔵庫が壊れたとき → <input type="text" placeholder="対応案を記入" /></label><br />
+        <label><input type="checkbox" /> 家賃が払えないとき → <input type="text" placeholder="対応案を記入" /></label><br />
+        <label><input type="checkbox" /> 風邪をひいたとき → <input type="text" placeholder="対応案を記入" /></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>振り返り欄</h2>
+    <textarea rows="6" placeholder="今日の気づき、重要だと思うこと、不安点などを記入"></textarea>
+  </div>
+
+  <script>
+    function num(id){ return Number(document.getElementById(id).value || 0); }
+    function set(id, val){ document.getElementById(id).value = val; }
+    function calc(){
+      const incTotal = num('inc1') + num('inc2') + num('inc3') + num('inc4');
+      const expTotal = num('exp1') + num('exp2') + num('exp3') + num('exp4') + num('exp5') + num('exp6') + num('exp7');
+      set('incTotal', incTotal);
+      set('expTotal', expTotal);
+      set('balance', incTotal - expTotal);
+    }
+    function clearAll(){
+      document.querySelectorAll('input[type="number"], input[type="text"], textarea').forEach(el => {
+        if (el.hasAttribute('readonly')) return;
+        el.value = '';
+      });
+      set('incTotal', '');
+      set('expTotal', '');
+      set('balance', '');
+    }
+  </script>
+</body>
+</html>
